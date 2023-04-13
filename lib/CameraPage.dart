@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'constants.dart';
-
 
 class CameraPage extends StatefulWidget {
   final CameraDescription camera;
@@ -55,33 +57,64 @@ class _CameraPageState extends State<CameraPage> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Container(
-        width: 70,
-        height: 70,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white,
-        ),
-        child: FloatingActionButton(
-          backgroundColor:Constants.primaryColor,
-          onPressed: () async {
-            try {
-              await _initializeControllerFuture;
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          FloatingActionButton(
+            backgroundColor: Colors.white,
+            onPressed: () async {
+              try {
+                final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+                if (pickedFile != null) {
+                  // Navigate to the preview page with the selected image
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PreviewPage(imagePath: pickedFile.path),
+                    ),
+                  );
+                }
+              } catch (e) {
+                print(e);
+              }
+            },
+            child: Icon(Icons.photo_library, color: Constants.primaryColor),
+          ),
+          Container(
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
+            child: FloatingActionButton(
+              backgroundColor: Constants.primaryColor,
+              onPressed: () async {
+                try {
+                  await _initializeControllerFuture;
 
-              // Take the picture in a square aspect ratio
-              final XFile picture = await _controller.takePicture();
+                  // Take the picture in a square aspect ratio
+                  final XFile picture = await _controller.takePicture();
 
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PreviewPage(imagePath: picture.path),
-                ),
-              );
-            } catch (e) {
-              print(e);
-            }
-          },
-          child: const Icon(Icons.camera_alt),
-        ),
+                  // Save the picture to the device storage
+                  final directory = await getApplicationDocumentsDirectory();
+                  final String filePath = '${directory.path}/picture.png';
+                  final File file = File(filePath);
+                  await file.writeAsBytes(await picture.readAsBytes());
+
+                  // Navigate to the preview page with the saved picture
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PreviewPage(imagePath: filePath),
+                    ),
+                  );
+                } catch (e) {
+                  print(e);
+                }
+              },
+              child: Icon(Icons.camera_alt),
+            ),
+          ),
+        ],
       ),
     );
   }
