@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'constants.dart';
-import 'custom_textfield.dart';
+import 'custom_textfield2.dart';
 import 'signin_page.dart';
 import 'package:page_transition/page_transition.dart';
-
-class ForgotPassword extends StatelessWidget {
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:canker_detect/utils/toastmessage.dart';
+import 'package:easy_localization/easy_localization.dart';
+class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
 
+  @override
+  State<ForgotPassword> createState() => _ForgotPasswordState();
+}
+
+  class _ForgotPasswordState extends State<ForgotPassword>
+  {
+    final emailController= TextEditingController();
+    final auth= FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -30,13 +40,21 @@ class ForgotPassword extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              const CustomTextfield(
+               CustomTextfield2(
                 obscureText: false,
-                hintText: 'Enter Email',
+                hintText: 'Email-text'.tr(),
+                controller: emailController,
                 icon: Icons.alternate_email,
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  auth.sendPasswordResetEmail(email: emailController.text.toString()).then((value){
+                    Utils().toastMessage("ToastMessagePassword_text".tr());
+                  }).onError((error, stackTrace) {
+                    Utils().toastMessage(error.toString());
+                  });
+
+                },
                 child: Container(
                   width: size.width,
                   decoration: BoxDecoration(
@@ -44,7 +62,7 @@ class ForgotPassword extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                   child: const Center(
                     child: Text(
                       'Reset Password',
@@ -64,20 +82,20 @@ class ForgotPassword extends StatelessWidget {
                   Navigator.pushReplacement(
                       context,
                       PageTransition(
-                          child:  SignIn(),
+                          child: SignIn(),
                           type: PageTransitionType.bottomToTop));
                 },
                 child: Center(
                   child: Text.rich(
                     TextSpan(children: [
                       TextSpan(
-                        text: 'Have an Account? ',
+                        text: 'HaveAnAccount_text'.tr(),
                         style: TextStyle(
                           color: Constants.blackColor,
                         ),
                       ),
                       TextSpan(
-                        text: 'Login',
+                        text: 'Login_text'.tr(),
                         style: TextStyle(
                           color: Constants.primaryColor,
                         ),

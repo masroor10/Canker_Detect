@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '251096605926',
     projectId: 'canker-detect',
     storageBucket: 'canker-detect.appspot.com',
-    iosClientId: '251096605926-vs0l4fjmei9kig3gs8r0et4tv0ilsqbk.apps.googleusercontent.com',
+    iosClientId:
+        '251096605926-vs0l4fjmei9kig3gs8r0et4tv0ilsqbk.apps.googleusercontent.com',
     iosBundleId: 'com.example.cankerDetect',
   );
 }

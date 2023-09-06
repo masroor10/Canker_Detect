@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'constants.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 
 class CameraPage extends StatefulWidget {
   final CameraDescription camera;
@@ -64,12 +65,14 @@ class _CameraPageState extends State<CameraPage> {
             backgroundColor: Colors.white,
             onPressed: () async {
               try {
-                final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+                final pickedFile =
+                    await ImagePicker().getImage(source: ImageSource.gallery);
                 if (pickedFile != null) {
                   // Navigate to the preview page with the selected image
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => PreviewPage(imagePath: pickedFile.path),
+                      builder: (context) =>
+                          PreviewPage(imagePath: pickedFile.path),
                     ),
                   );
                 }
@@ -100,6 +103,7 @@ class _CameraPageState extends State<CameraPage> {
                   final String filePath = '${directory.path}/picture.png';
                   final File file = File(filePath);
                   await file.writeAsBytes(await picture.readAsBytes());
+                  await GallerySaver.saveImage(filePath);
 
                   // Navigate to the preview page with the saved picture
                   Navigator.of(context).push(

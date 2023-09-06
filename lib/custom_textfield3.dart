@@ -28,15 +28,10 @@ class CustomTextfield3 extends StatelessWidget {
           icon,
           color: Constants.blackColor.withOpacity(.3),
         ),
-
         hintText: hintText,
       ),
-
       cursorColor: Constants.blackColor.withOpacity(.5),
-      onChanged:onChanged,
+      onChanged: onChanged,
     );
   }
 }
-
-
-

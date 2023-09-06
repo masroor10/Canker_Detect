@@ -1,9 +1,19 @@
+
+import 'package:canker_detect/Community3/main.dart';
+import 'package:canker_detect/Community3/screens/feed_screens.dart';
 import 'package:flutter/material.dart';
 import 'CameraPage.dart';
 import 'package:camera/camera.dart';
 import 'constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'WeatherPage.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'profile_page.dart';
+import 'package:canker_detect/Community/pages/HomePage.dart';
+import 'package:canker_detect/Community2/CommunityPage.dart';
+
 class NextPage extends StatefulWidget {
   const NextPage({Key? key}) : super(key: key);
 
@@ -12,30 +22,30 @@ class NextPage extends StatefulWidget {
 }
 
 class _NextPageState extends State<NextPage> {
-  late User _user;
+  late User? _user;
   String _userName = '';
   int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _user = FirebaseAuth.instance.currentUser!;
-    _userName = _user.displayName ?? '';
-
+    _user = FirebaseAuth.instance.currentUser;
+    _userName = _user?.displayName ?? '';
   }
 
   final List<Widget> _tabs = [
-    Center(child: const Text('Community')),
-    Center(child: const Text('Gallery')),
-    Center(child: const Text('Weather')),
-    Center(child: const Text('Camera')),
+    Center(child: Text('Community_text'.tr(), style: TextStyle(fontSize: 18))),
+    Center(child: Text('Gallery_text'.tr(), style: TextStyle(fontSize: 18))),
+    Center(child: Text('Weather_text'.tr(), style: TextStyle(fontSize: 18))),
+    Center(child: Text('Camera_text'.tr(), style: TextStyle(fontSize: 18))),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Next Page'),
+        title: Text('HomePage_text'.tr(), style: TextStyle(fontSize: 20)),
+        backgroundColor: Color(0xff296e48),
       ),
       drawer: Drawer(
         child: ListView(
@@ -53,10 +63,12 @@ class _NextPageState extends State<NextPage> {
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+                  SizedBox(height: 8),
                   Text(
-                    'Options',
+                    'Options_text'.tr(),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -67,24 +79,30 @@ class _NextPageState extends State<NextPage> {
             ),
             ListTile(
               leading: Icon(Icons.person),
-              title: Text('Profile'),
+              title: Text('Profile_text'.tr()),
               onTap: () {
                 Navigator.pop(context); // Close the drawer
-                Navigator.pushNamed(context, '/profile'); // Navigate to the profile page
+                if (_user != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(user: _user),
+                    ),
+                  ); // Navigate to the profile page
+                }
               },
-
             ),
             ListTile(
               leading: Icon(Icons.settings),
-              title: Text('Settings'),
+              title: Text('Settings_text'.tr()),
               onTap: () {
                 // Navigate to the settings page.
               },
             ),
             ListTile(
               leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: ()async {
+              title: Text('LogOut_text'.tr()),
+              onTap: () async {
                 await GoogleSignIn().signOut();
                 await FirebaseAuth.instance.signOut();
                 Navigator.pop(context);
@@ -95,32 +113,69 @@ class _NextPageState extends State<NextPage> {
         ),
       ),
       body: _tabs[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Constants.primaryColor,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.black,
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Community',
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 78, 245, 84),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 20,
+              color: Colors.black.withOpacity(.1),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
+          child: GNav(
+            selectedIndex: _currentIndex,
+            backgroundColor: Color.fromARGB(255, 78, 245, 84),
+            rippleColor: Colors.grey[300]!,
+            hoverColor: Colors.grey[100]!,
+            gap: 8,
+            activeColor: Colors.white,
+            iconSize: 24,
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            duration: Duration(milliseconds: 400),
+            tabBackgroundColor: Color.fromARGB(255, 139, 206, 94),
+            color: Colors.white,
+            tabs: [
+              GButton(
+                icon: Icons.people,
+                text: 'Community_text'.tr(),
+              ),
+              GButton(
+                icon: Icons.browse_gallery,
+                text: 'Gallery_text'.tr(),
+              ),
+              GButton(
+                icon: Icons.cloud,
+                text: 'Weather_text'.tr(),
+              ),
+            ],
+            onTabChange: (index) {
+              if (index == 0) {
+                // Check if the Community tab is pressed (index 0)
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MyApp2(), // Replace CommunityPage with your desired Community page widget
+                  ),
+                );
+              } else if (index == 2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WeatherPage(),
+                  ),
+                );
+              } else {
+                setState(() {
+                  _currentIndex = index;
+                });
+              }
+            },
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.browse_gallery),
-            label: 'Gallery',
-            backgroundColor: Constants.primaryColor,
-          ),
-
-          BottomNavigationBarItem(
-            icon: Icon(Icons.cloud),
-            label: 'Weather',
-          )
-        ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.camera_alt),
@@ -135,7 +190,4 @@ class _NextPageState extends State<NextPage> {
       ),
     );
   }
-
 }
-
-

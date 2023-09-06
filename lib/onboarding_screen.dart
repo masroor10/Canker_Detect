@@ -1,8 +1,9 @@
+import 'package:canker_detect/Community3/screens/login_screen.dart';
 import 'package:canker_detect/main.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'signin_page.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -28,7 +29,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: InkWell(
               onTap: () {
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (_) => SignIn()));
+                    context, MaterialPageRoute(builder: (_) => LoginScreen()));
               }, //to login screen. We will update later
               child: const Text(
                 'Skip',
@@ -54,19 +55,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             controller: _pageController,
             children: [
               createPage(
-                image: 'assets/images/plant_one.png',
-                title: Constants.titleOne,
-                description: Constants.descriptionOne,
+                image: 'assets/images/community.png',
+                title: "Onboarding-titleOne".tr(),
+                description: "Onboarding-titleOneDesc".tr(),
               ),
               createPage(
                 image: 'assets/images/plant_two.png',
-                title: Constants.titleTwo,
-                description: Constants.descriptionTwo,
+                title: "Onboarding-titleTwo".tr(),
+                description: "Onboarding-titleTwoDesc".tr(),
               ),
               createPage(
-                image: 'assets/images/plant_three.png',
-                title: Constants.titleThree,
-                description: Constants.descriptionThree,
+                image: 'assets/images/weather.png',
+                title: "Onboarding-titleThree".tr(),
+                description: "Onboarding-titleThreeDesc".tr(),
               ),
             ],
           ),
@@ -93,7 +94,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         }
                       } else {
                         Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (_) =>  SignIn()));
+                            MaterialPageRoute(builder: (_) => LoginScreen()));
                       }
                     });
                   },
@@ -166,7 +167,7 @@ class createPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            height: 350,
+            height: 300,
             child: Image.asset(image),
           ),
           const SizedBox(

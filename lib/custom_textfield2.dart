@@ -8,13 +8,13 @@ class CustomTextfield2 extends StatelessWidget {
   final TextEditingController controller;
   final Function(String)? onChanged;
 
-   CustomTextfield2({
+  CustomTextfield2({
     Key? key,
     required this.controller,
     required this.icon,
     required this.obscureText,
     required this.hintText,
-     this.onChanged,
+    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -31,15 +31,10 @@ class CustomTextfield2 extends StatelessWidget {
           icon,
           color: Constants.blackColor.withOpacity(.3),
         ),
-
         hintText: hintText,
       ),
-
       cursorColor: Constants.blackColor.withOpacity(.5),
-      onChanged:onChanged,
+      onChanged: onChanged,
     );
   }
 }
-
-
-
